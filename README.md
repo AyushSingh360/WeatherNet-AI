@@ -124,7 +124,7 @@ interface SilkProps {
 ### Quick Start (Authorized Users Only)
 
 1. **Obtain Permission:**
-   Contact ayush.singh.dev@example.com for licensing
+   Contact ayushsingh21109@gmail.com for licensing
 
 2. **Clone the repository:**
    ```bash
