@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 interface AirQualityData {
   list: Array<{
@@ -20,36 +20,21 @@ interface AirQualityData {
   }>
 }
 
+async function fetchAirQuality(lat: number, lon: number): Promise<AirQualityData> {
+  const response = await fetch(`/api/air-quality?lat=${lat}&lon=${lon}`)
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch air quality data")
+  }
+  
+  return response.json()
+}
+
 export function useAirQuality(lat?: number, lon?: number) {
-  const [airQuality, setAirQuality] = useState<AirQualityData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchAirQuality = async () => {
-      if (!lat || !lon) return
-
-      setIsLoading(true)
-      setError(null)
-
-      try {
-        const response = await fetch(`/api/air-quality?lat=${lat}&lon=${lon}`)
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch air quality data")
-        }
-
-        const data = await response.json()
-        setAirQuality(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch air quality data")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchAirQuality()
-  }, [lat, lon])
-
-  return { airQuality, isLoading, error }
+  return useQuery<AirQualityData, Error>({
+    queryKey: ["air-quality", lat, lon],
+    queryFn: () => fetchAirQuality(lat!, lon!),
+    enabled: lat !== undefined && lon !== undefined,
+    staleTime: 10 * 60 * 1000,
+  })
 }
