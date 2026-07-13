@@ -4,12 +4,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sun, Moon, Wind, Eye, Droplets, Thermometer, Gauge, Cloud } from "lucide-react"
 import { formatTime } from "@/lib/utils"
 import type { CurrentWeather } from "@/types/weather"
+import { 
+  useUnitPreferences, 
+  convertWindSpeed, 
+  convertPressure, 
+  convertDistance, 
+  getWindSpeedUnitLabel, 
+  getDistanceUnitLabel, 
+  getPressureUnitLabel 
+} from "@/hooks/use-unit-preferences"
 
 interface WeatherDetailsProps {
   weather: CurrentWeather
 }
 
 export function WeatherDetails({ weather }: WeatherDetailsProps) {
+  const { preferences } = useUnitPreferences()
+
   const details = [
     {
       icon: <Sun className="h-5 w-5 text-yellow-400" />,
@@ -24,7 +35,7 @@ export function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Wind className="h-5 w-5 text-gray-300" />,
       label: "Wind Speed",
-      value: `${weather.wind.speed} m/s`,
+      value: `${convertWindSpeed(weather.wind.speed, preferences.windSpeed)} ${getWindSpeedUnitLabel(preferences.windSpeed)}`,
     },
     {
       icon: <Wind className="h-5 w-5 text-gray-300" />,
@@ -34,7 +45,7 @@ export function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Eye className="h-5 w-5 text-blue-400" />,
       label: "Visibility",
-      value: `${(weather.visibility / 1000).toFixed(1)} km`,
+      value: `${convertDistance(weather.visibility, preferences.distance).value} ${getDistanceUnitLabel(preferences.distance)}`,
     },
     {
       icon: <Droplets className="h-5 w-5 text-blue-500" />,
@@ -44,7 +55,7 @@ export function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Gauge className="h-5 w-5 text-green-400" />,
       label: "Pressure",
-      value: `${weather.main.pressure} hPa`,
+      value: `${convertPressure(weather.main.pressure, preferences.pressure)} ${getPressureUnitLabel(preferences.pressure)}`,
     },
     {
       icon: <Cloud className="h-5 w-5 text-gray-400" />,
