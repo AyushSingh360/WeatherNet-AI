@@ -1,7 +1,8 @@
 "use client";
 
 /* eslint-disable react/no-unknown-property */
-import React, { forwardRef, useMemo, useRef, useLayoutEffect } from 'react';
+import React, { forwardRef, useMemo, useRef, useLayoutEffect, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Canvas, useFrame, useThree, RootState } from '@react-three/fiber';
 import { Color, Mesh, ShaderMaterial } from 'three';
 import { IUniform } from 'three';
@@ -93,10 +94,15 @@ interface SilkPlaneProps {
 
 const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane({ uniforms }, ref) {
     const { viewport } = useThree();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useLayoutEffect(() => {
         const mesh = ref as React.MutableRefObject<Mesh | null>;
-        if (mesh.current) {
+        if (mesh.current && viewport) {
             mesh.current.scale.set(viewport.width, viewport.height, 1);
         }
     }, [ref, viewport]);
@@ -111,6 +117,10 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane({ uniforms
         }
     });
 
+    if (!mounted || !viewport) {
+        return null;
+    }
+
     return (
         <mesh ref={ref}>
             <planeGeometry args={[1, 1, 1, 1]} />
@@ -120,15 +130,13 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane({ uniforms
 });
 SilkPlane.displayName = 'SilkPlane';
 
-export interface SilkProps {
+const SilkCanvas = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }: {
     speed?: number;
     scale?: number;
     color?: string;
     noiseIntensity?: number;
     rotation?: number;
-}
-
-const Silk: React.FC<SilkProps> = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }) => {
+}) => {
     const meshRef = useRef<Mesh>(null);
 
     const uniforms = useMemo<SilkUniforms>(
@@ -144,9 +152,25 @@ const Silk: React.FC<SilkProps> = ({ speed = 5, scale = 1, color = '#7B7481', no
     );
 
     return (
-        <Canvas dpr={[1, 2]} frameloop="always">
+        <Canvas dpr={[1, 2]} frameloop="always" style={{ width: '100%', height: '100%' }}>
             <SilkPlane ref={meshRef} uniforms={uniforms} />
         </Canvas>
+    );
+};
+
+export interface SilkProps {
+    speed?: number;
+    scale?: number;
+    color?: string;
+    noiseIntensity?: number;
+    rotation?: number;
+}
+
+const Silk: React.FC<SilkProps> = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }) => {
+    return (
+        <div style={{ width: '100%', height: '100%' }}>
+            <SilkCanvas speed={speed} scale={scale} color={color} noiseIntensity={noiseIntensity} rotation={rotation} />
+        </div>
     );
 };
 
