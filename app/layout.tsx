@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
+import { QueryProvider } from "@/providers/query-provider"
+import { UnitPreferencesProvider } from "@/hooks/use-unit-preferences"
 import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -22,8 +24,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider>
-          {children}
-          <Toaster />
+          <QueryProvider>
+            <UnitPreferencesProvider>
+              {children}
+              <Toaster />
+            </UnitPreferencesProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
