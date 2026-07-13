@@ -1,8 +1,19 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
 import { TrendingUp } from "lucide-react"
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  AreaChart,
+  Area
+} from "recharts"
+import { useUnitPreferences, convertTemperature, getTemperatureUnitLabel, convertPressure, getPressureUnitLabel } from "@/hooks/use-unit-preferences"
 import { formatTime } from "@/lib/utils"
 import type { ForecastData } from "@/types/weather"
 
@@ -11,12 +22,17 @@ interface WeatherChartProps {
 }
 
 export function WeatherChart({ forecast }: WeatherChartProps) {
+  const { preferences } = useUnitPreferences()
+
   const chartData = forecast.slice(0, 8).map(item => ({
     time: formatTime(item.dt),
-    temp: Math.round(item.main.temp),
+    temp: convertTemperature(item.main.temp, preferences.temperature),
     humidity: item.main.humidity,
-    pressure: item.main.pressure,
+    pressure: convertPressure(item.main.pressure, preferences.pressure),
   }))
+
+  const tempUnit = getTemperatureUnitLabel(preferences.temperature)
+  const pressureUnit = getPressureUnitLabel(preferences.pressure)
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -24,7 +40,7 @@ export function WeatherChart({ forecast }: WeatherChartProps) {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Temperature Trend
+            Temperature Trend ({tempUnit})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -70,7 +86,7 @@ export function WeatherChart({ forecast }: WeatherChartProps) {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Humidity & Pressure
+            Humidity & Pressure ({pressureUnit})
           </CardTitle>
         </CardHeader>
         <CardContent>
