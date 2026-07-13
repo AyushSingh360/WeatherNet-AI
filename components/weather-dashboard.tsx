@@ -23,19 +23,35 @@ import { LoadingSpinner } from "@/components/loading-spinner"
 import { Logo } from "@/components/logo"
 import { formatDate, formatTime, getWeatherIcon, getWeatherGradient } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
+import { 
+  WeatherCardSkeleton, 
+  AirQualityCardSkeleton, 
+  ForecastCardSkeleton, 
+  DetailsSkeleton, 
+  MapSkeleton, 
+  ChartSkeleton, 
+  SearchSkeleton,
+  Skeleton
+} from "@/components/skeletons"
+import { ErrorBoundary } from "@/components/error-boundary"
+import { useUnitPreferences, convertTemperature, convertWindSpeed, convertPressure, convertDistance, getTemperatureUnitLabel, getWindSpeedUnitLabel, getPressureUnitLabel, getDistanceUnitLabel } from "@/hooks/use-unit-preferences"
 
 export function WeatherDashboard() {
   const [city, setCity] = useState("London")
   const [searchInput, setSearchInput] = useState("")
   const [activeTab, setActiveTab] = useState("current")
   
-  const { currentWeather, forecast, isLoading, error } = useWeather(city)
+  const { data: weatherData, isLoading, error } = useWeather(city)
   const { location, isLoading: locationLoading, getCurrentLocation } = useGeolocation()
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
-  const { airQuality, isLoading: airQualityLoading } = useAirQuality(
-    currentWeather?.coord?.lat,
-    currentWeather?.coord?.lon
+  const { data: airQualityData, isLoading: airQualityLoading } = useAirQuality(
+    weatherData?.current?.coord?.lat,
+    weatherData?.current?.coord?.lon
   )
+  const { preferences } = useUnitPreferences()
+
+  const currentWeather = weatherData?.current
+  const forecast = weatherData?.forecast
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,9 +111,62 @@ export function WeatherDashboard() {
         <Alert className="max-w-md animate-fade-in bg-white/10 dark:bg-black/20 border-white/20">
           <AlertTriangle className="h-4 w-4 text-white" />
           <AlertDescription className="text-center text-white">
-            {error}
+            {error?.message || "An unknown error occurred"}
           </AlertDescription>
         </Alert>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <SearchSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <WeatherCardSkeleton className="lg:col-span-2" />
+          <div className="space-y-6">
+            <AirQualityCardSkeleton />
+            <div className="backdrop-blur-md bg-white/10 dark:bg-black/20 border-white/20 shadow-xl animate-slide-up p-6">
+              <Skeleton className="h-6 w-32 mb-4" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="backdrop-blur-md bg-white/10 dark:bg-black/20 border-white/20 backdrop-blur-md p-4">
+          <TabsList className="grid w-full grid-cols-4 bg-white/10 dark:bg-black/20 backdrop-blur-md border-white/20">
+            <TabsTrigger value="current" className="text-white data-[state=active]:bg-white/20 dark:data-[state=active]:bg-black/30 data-[state=active]:text-white transition-all duration-300">
+              Current
+            </TabsTrigger>
+            <TabsTrigger value="forecast" className="text-white data-[state=active]:bg-white/20 dark:data-[state=active]:bg-black/30 data-[state=active]:text-white transition-all duration-300">
+              Forecast
+            </TabsTrigger>
+            <TabsTrigger value="charts" className="text-white data-[state=active]:bg-white/20 dark:data-[state=active]:bg-black/30 data-[state=active]:text-white transition-all duration-300">
+              Charts
+            </TabsTrigger>
+            <TabsTrigger value="favorites" className="text-white data-[state=active]:bg-white/20 dark:data-[state=active]:bg-black/30 data-[state=active]:text-white transition-all duration-300">
+              Favorites
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="current" className="mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DetailsSkeleton />
+              <MapSkeleton />
+            </div>
+          </TabsContent>
+          <TabsContent value="forecast" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <ForecastCardSkeleton key={i} />
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="charts" className="mt-6">
+            <ChartSkeleton />
+          </TabsContent>
+        </div>
       </div>
     )
   }
@@ -166,7 +235,8 @@ export function WeatherDashboard() {
                 </div>
                 <div className="text-right">
                   <div className="text-5xl font-bold text-white animate-pulse-slow">
-                    {Math.round(currentWeather.main.temp)}°C
+                    {convertTemperature(currentWeather.main.temp, preferences.temperature)}
+                    {getTemperatureUnitLabel(preferences.temperature)}
                   </div>
                   <div className="text-white/80 capitalize">
                     {currentWeather.weather[0].description}
@@ -180,8 +250,8 @@ export function WeatherDashboard() {
                   {getWeatherIcon(currentWeather.weather[0].icon)}
                 </div>
                 <div className="text-right text-white/80">
-                  <div>Feels like {Math.round(currentWeather.main.feels_like)}°C</div>
-                  <div>H: {Math.round(currentWeather.main.temp_max)}° L: {Math.round(currentWeather.main.temp_min)}°</div>
+                  <div>Feels like {convertTemperature(currentWeather.main.feels_like, preferences.temperature)}{getTemperatureUnitLabel(preferences.temperature)}</div>
+                  <div>H: {convertTemperature(currentWeather.main.temp_max, preferences.temperature)}° L: {convertTemperature(currentWeather.main.temp_min, preferences.temperature)}°</div>
                 </div>
               </div>
               
@@ -189,7 +259,10 @@ export function WeatherDashboard() {
                 <div className="text-center p-3 rounded-lg bg-white/10 dark:bg-black/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/30 hover:scale-105">
                   <Wind className="h-5 w-5 text-white/80 mx-auto mb-1" />
                   <div className="text-sm text-white/80">Wind</div>
-                  <div className="font-semibold text-white">{currentWeather.wind.speed} m/s</div>
+                  <div className="font-semibold text-white">
+                    {convertWindSpeed(currentWeather.wind.speed, preferences.windSpeed)}
+                    {getWindSpeedUnitLabel(preferences.windSpeed)}
+                  </div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-white/10 dark:bg-black/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/30 hover:scale-105">
                   <Droplets className="h-5 w-5 text-white/80 mx-auto mb-1" />
@@ -199,12 +272,18 @@ export function WeatherDashboard() {
                 <div className="text-center p-3 rounded-lg bg-white/10 dark:bg-black/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/30 hover:scale-105">
                   <Eye className="h-5 w-5 text-white/80 mx-auto mb-1" />
                   <div className="text-sm text-white/80">Visibility</div>
-                  <div className="font-semibold text-white">{(currentWeather.visibility / 1000).toFixed(1)} km</div>
+                  <div className="font-semibold text-white">
+                    {convertDistance(currentWeather.visibility, preferences.distance).value}
+                    {getDistanceUnitLabel(preferences.distance)}
+                  </div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-white/10 dark:bg-black/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/30 hover:scale-105">
                   <Thermometer className="h-5 w-5 text-white/80 mx-auto mb-1" />
                   <div className="text-sm text-white/80">Pressure</div>
-                  <div className="font-semibold text-white">{currentWeather.main.pressure} hPa</div>
+                  <div className="font-semibold text-white">
+                    {convertPressure(currentWeather.main.pressure, preferences.pressure)}
+                    {getPressureUnitLabel(preferences.pressure)}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -213,7 +292,7 @@ export function WeatherDashboard() {
           {/* Air Quality Card */}
           <div className="space-y-6">
             <AirQualityCard 
-              airQuality={airQuality} 
+              airQuality={airQualityData} 
               isLoading={airQualityLoading}
               className="animate-slide-up delay-200"
             />
