@@ -135,7 +135,7 @@ export function WeatherDashboard() {
             </div>
           </div>
         </div>
-        <div className="backdrop-blur-md bg-white/10 dark:bg-black/20 border-white/20 backdrop-blur-md p-4">
+        <Tabs defaultValue="current" className="backdrop-blur-md bg-white/10 dark:bg-black/20 border-white/20 p-4 rounded-lg">
           <TabsList className="grid w-full grid-cols-4 bg-white/10 dark:bg-black/20 backdrop-blur-md border-white/20">
             <TabsTrigger value="current" className="text-white data-[state=active]:bg-white/20 dark:data-[state=active]:bg-black/30 data-[state=active]:text-white transition-all duration-300">
               Current
@@ -166,7 +166,7 @@ export function WeatherDashboard() {
           <TabsContent value="charts" className="mt-6">
             <ChartSkeleton />
           </TabsContent>
-        </div>
+        </Tabs>
       </div>
     )
   }
