@@ -65,6 +65,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.185.1",
     "vaul": "^1.0.0",
     "zod": "^3.24.1"
   },
@@ -76,6 +77,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.7.0",
     "jsdom": "^29.1.1",
