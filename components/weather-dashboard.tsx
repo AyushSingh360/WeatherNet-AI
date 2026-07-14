@@ -63,9 +63,9 @@ export function WeatherDashboard() {
 
   const handleLocationClick = async () => {
     try {
-      await getCurrentLocation()
-      if (location) {
-        setCity(`${location.lat},${location.lon}`)
+      const newLocation = await getCurrentLocation()
+      if (newLocation) {
+        setCity(`${newLocation.lat},${newLocation.lon}`)
         toast({
           title: "Location detected",
           description: "Weather updated for your current location",

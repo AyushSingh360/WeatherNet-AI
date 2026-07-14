@@ -175,15 +175,11 @@ function useToast() {
 		listeners.push(setState);
 		return () => {
 			const index = listeners.indexOf(setState);
-			// Clear all scheduled timeouts to prevent memory leaks
-			toastTimeouts.forEach((timeout) => clearTimeout(timeout));
-			toastTimeouts.clear();
-
 			if (index > -1) {
 				listeners.splice(index, 1);
 			}
 		};
-	}, [state]);
+	}, []);
 
 	return {
 		...state,
