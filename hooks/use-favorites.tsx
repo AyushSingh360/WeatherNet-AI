@@ -10,37 +10,47 @@ interface FavoriteCity {
   icon: string
 }
 
+const FAVORITES_KEY = "weather-favorites"
+
 export function useFavorites() {
   const [favorites, setFavorites] = useState<FavoriteCity[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem("weather-favorites")
-    if (stored) {
-      try {
-        setFavorites(JSON.parse(stored))
-      } catch (error) {
-        console.error("Failed to parse favorites from localStorage:", error)
+    try {
+      const stored = localStorage.getItem(FAVORITES_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed)) {
+          setFavorites(parsed)
+        }
       }
+    } catch (error) {
+      console.error("Failed to parse favorites from localStorage:", error)
+    } finally {
+      setIsLoaded(true)
     }
   }, [])
 
-  const saveFavorites = (newFavorites: FavoriteCity[]) => {
-    setFavorites(newFavorites)
-    localStorage.setItem("weather-favorites", JSON.stringify(newFavorites))
-  }
+  useEffect(() => {
+    if (!isLoaded) return
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
+    } catch (error) {
+      console.warn("Failed to persist favorites to localStorage:", error)
+    }
+  }, [favorites, isLoaded])
 
   const addFavorite = (city: FavoriteCity) => {
-    const newFavorites = [...favorites.filter(fav => fav.name !== city.name), city]
-    saveFavorites(newFavorites)
+    setFavorites((prev) => [...prev.filter((fav) => fav.name !== city.name), city])
   }
 
   const removeFavorite = (cityName: string) => {
-    const newFavorites = favorites.filter(fav => fav.name !== cityName)
-    saveFavorites(newFavorites)
+    setFavorites((prev) => prev.filter((fav) => fav.name !== cityName))
   }
 
   const isFavorite = (cityName: string) => {
-    return favorites.some(fav => fav.name === cityName)
+    return favorites.some((fav) => fav.name === cityName)
   }
 
   return {

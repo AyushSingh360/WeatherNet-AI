@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import type { CurrentWeather, ForecastData } from "@/types/weather"
 
 interface WeatherResponse {
@@ -8,28 +8,44 @@ interface WeatherResponse {
   forecast: ForecastData[]
 }
 
+async function parseError(response: Response, fallback: string): Promise<Error> {
+  try {
+    const body = await response.json()
+    return new Error(body?.message || fallback)
+  } catch {
+    return new Error(fallback)
+  }
+}
+
 async function fetchWeather(city: string): Promise<WeatherResponse> {
-  const [currentRes, forecastRes] = await Promise.all([
+  const [weatherResult, forecastResult] = await Promise.allSettled([
     fetch(`/api/weather?city=${encodeURIComponent(city)}`),
     fetch(`/api/forecast?city=${encodeURIComponent(city)}`),
   ])
 
-  if (!currentRes.ok) {
-    const error = await currentRes.json()
-    throw new Error(error.message || "Failed to fetch current weather")
+  if (weatherResult.status === "rejected") {
+    throw new Error("Network error while fetching current weather")
   }
 
-  if (!forecastRes.ok) {
-    const error = await forecastRes.json()
-    throw new Error(error.message || "Failed to fetch forecast")
+  const weatherRes = weatherResult.value
+  if (!weatherRes.ok) {
+    const error = await parseError(weatherRes, "Failed to fetch current weather")
+    throw error
   }
 
-  const current = await currentRes.json()
-  const forecastData = await forecastRes.json()
+  const current: CurrentWeather = await weatherRes.json()
+
+  let forecast: ForecastData[] = []
+  if (forecastResult.status === "fulfilled" && forecastResult.value.ok) {
+    const forecastData = await forecastResult.value.json()
+    forecast = forecastData.list
+  } else {
+    console.warn("Forecast data unavailable for city:", city)
+  }
 
   return {
     current,
-    forecast: forecastData.list,
+    forecast,
   }
 }
 
@@ -39,5 +55,7 @@ export function useWeather(city: string) {
     queryFn: () => fetchWeather(city),
     enabled: !!city,
     staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+    refetchInterval: 10 * 60 * 1000,
   })
 }

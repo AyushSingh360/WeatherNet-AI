@@ -21,6 +21,24 @@ export function formatTime(timestamp: number): string {
   })
 }
 
+export function formatTimeAtTimezone(timestamp: number, offsetSeconds?: number): string {
+  if (!timestamp || isNaN(timestamp)) return "--:--"
+  const offset = typeof offsetSeconds === "number" && !isNaN(offsetSeconds) ? offsetSeconds : 0
+  const date = new Date((timestamp + offset) * 1000)
+  if (isNaN(date.getTime())) return "--:--"
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  })
+}
+
+export function getWindDirection(deg: number): string {
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+  const normalized = ((deg % 360) + 360) % 360
+  return directions[Math.round(normalized / 45) % 8]
+}
+
 export function formatDay(timestamp: number): string {
   return new Date(timestamp * 1000).toLocaleDateString("en-US", {
     weekday: "short",
@@ -50,19 +68,4 @@ export function getWeatherIcon(iconCode: string): string {
   }
   
   return iconMap[iconCode] || "🌤️"
-}
-
-export function getWeatherGradient(condition: string): string {
-  const gradients: { [key: string]: string } = {
-    "Clear": "from-yellow-400 via-orange-500 to-red-500",
-    "Clouds": "from-gray-400 via-gray-500 to-gray-600",
-    "Rain": "from-blue-400 via-blue-500 to-blue-600",
-    "Drizzle": "from-blue-300 via-blue-400 to-blue-500",
-    "Thunderstorm": "from-purple-400 via-purple-500 to-purple-600",
-    "Snow": "from-blue-100 via-blue-200 to-blue-300",
-    "Mist": "from-gray-300 via-gray-400 to-gray-500",
-    "Fog": "from-gray-300 via-gray-400 to-gray-500",
-  }
-  
-  return gradients[condition] || "from-blue-400 via-blue-500 to-blue-600"
 }

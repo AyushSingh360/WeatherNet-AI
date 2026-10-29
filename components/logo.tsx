@@ -24,13 +24,13 @@ export function Logo({ className, size = "md" }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className="relative">
-        <Cloud className={cn("text-white/90", iconSizes[size])} />
-        <Zap className={cn("absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white animate-pulse", 
+        <Cloud className={cn("text-black", iconSizes[size])} />
+        <Zap className={cn("absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-black animate-pulse", 
           size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4 md:h-5 md:w-5" : "h-5 w-5 md:h-6 md:w-6"
         )} />
       </div>
-      <h1 className={cn("font-bold text-white drop-shadow-lg", sizeClasses[size])}>
-        Weather<span className="text-gray-300">Net</span>
+      <h1 className={cn("font-bold text-black drop-shadow-sm", sizeClasses[size])}>
+        Weather<span className="text-zinc-600">Net</span>
       </h1>
     </div>
   )

@@ -16,6 +16,18 @@ export default defineConfig({
         runScripts: 'dangerously',
       },
     },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['lib/**/*.ts', 'hooks/**/*.{ts,tsx}', 'app/api/**/*.ts'],
+      exclude: ['**/*.test.{ts,tsx}', '**/*.d.ts', 'hooks/use-toast.ts'],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        statements: 80,
+        branches: 75,
+      },
+    },
   },
   resolve: {
     alias: {

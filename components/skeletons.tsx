@@ -11,7 +11,7 @@ export function Skeleton({ className, variant = "text", ...props }: SkeletonProp
     <div
       data-testid="skeleton"
       className={cn(
-        "animate-pulse rounded bg-white/10 dark:bg-black/20",
+        "animate-pulse rounded bg-black/10 dark:bg-black/20",
         {
           "h-4 w-full": variant === "text",
           "h-10 w-10 rounded-full": variant === "circular",
@@ -109,6 +109,27 @@ export function SearchSkeleton() {
         <Skeleton className="h-10 flex-1" />
         <Skeleton className="h-10 w-10" />
         <Skeleton className="h-10 w-10" />
+      </div>
+    </div>
+  )
+}
+
+export function TabsSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={`backdrop-blur-md bg-white/10 dark:bg-black/20 border-white/20 p-4 rounded-lg animate-slide-up ${className || ""}`}>
+      <Skeleton className="h-9 w-full mb-2" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {[1, 2].map((i) => (
+          <div key={i} className="backdrop-blur-md bg-white/10 dark:bg-black/20 p-6 space-y-4 rounded-xl">
+            <Skeleton className="h-6 w-28" />
+            <Skeleton className="h-40 w-full" />
+            <div className="grid grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((j) => (
+                <Skeleton key={j} className="h-16" />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

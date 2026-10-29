@@ -14,8 +14,9 @@ export function useGeolocation() {
 
   const getCurrentLocation = useCallback(async () => {
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported by this browser")
-      return
+      const message = "Geolocation is not supported by this browser"
+      setError(message)
+      throw new Error(message)
     }
 
     setIsLoading(true)
@@ -38,7 +39,7 @@ export function useGeolocation() {
       setLocation(newLocation)
       return newLocation
     } catch (err) {
-      const errorMessage = err instanceof GeolocationPositionError 
+      const errorMessage = isGeolocationError(err)
         ? getGeolocationErrorMessage(err.code)
         : "Failed to get location"
       setError(errorMessage)
@@ -54,6 +55,10 @@ export function useGeolocation() {
     error,
     getCurrentLocation,
   }
+}
+
+function isGeolocationError(err: unknown): err is { code: number } {
+  return typeof err === "object" && err !== null && typeof (err as { code?: unknown }).code === "number"
 }
 
 function getGeolocationErrorMessage(code: number): string {

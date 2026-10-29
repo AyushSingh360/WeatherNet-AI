@@ -37,13 +37,13 @@
 
   .dark {
     --background: 0 0 0;
-    --foreground: 255 255 255;
+    --foreground: 0 0 0;
 
-    --card: 0 0 0;
-    --card-foreground: 255 255 255;
+    --card: 255 255 255;
+    --card-foreground: 0 0 0;
 
-    --popover: 0 0 0;
-    --popover-foreground: 255 255 255;
+    --popover: 255 255 255;
+    --popover-foreground: 0 0 0;
 
     --primary: 255 255 255;
     --primary-foreground: 0 0 0;
@@ -186,33 +186,14 @@
   box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
 }
 
-/* Scrollbar styling */
+/* Scrollbar indicator removal */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

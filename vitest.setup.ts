@@ -1,31 +1,30 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
-Object.defineProperty(window, 'localStorage', {
-  value: {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-  writable: true,
-})
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: {
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+    },
+    writable: true,
+  })
 
-Object.defineProperty(window, 'navigator', {
-  value: {
-    geolocation: {
+  Object.defineProperty(window.navigator, 'geolocation', {
+    value: {
       getCurrentPosition: vi.fn(),
       watchPosition: vi.fn(),
     },
-  },
-  writable: true,
-})
+    configurable: true,
+  })
 
-HTMLCanvasElement.prototype.getContext = vi.fn()
+  HTMLCanvasElement.prototype.getContext = vi.fn()
+}
 
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+})) as unknown as typeof ResizeObserver
