@@ -15,7 +15,7 @@ export function WebglBackground({ className, style }: WebglBackgroundProps) {
       style={style}
     >
       <Iridescence
-        color="#ffffff"
+        color={[1, 1, 1]}
         hueShift={0}
         saturation={0}
         brightness={0.55}
