@@ -61,7 +61,7 @@ export function HourlyStrip({ forecast, className }: HourlyStripProps) {
         <span className="text-black/60 text-xs font-medium">{nowLabel}</span>
       </div>
       <div
-        className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]"
+        className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="list"
         aria-label="Hour-by-hour forecast"
       >
