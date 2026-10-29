@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" width="100%" height="260">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <linearGradient id="iridGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8">
+        <animate attributeName="stop-color" values="#38bdf8;#818cf8;#c084fc;#38bdf8" dur="8s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.9">
+        <animate attributeName="stop-color" values="#818cf8;#c084fc;#38bdf8;#818cf8" dur="8s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.8">
+        <animate attributeName="stop-color" values="#c084fc;#38bdf8;#818cf8;#c084fc" dur="8s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+    </linearGradient>
+
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#ef4444" />
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <style>
+      .sun-ray {
+        transform-origin: 790px 75px;
+        animation: rotateSun 16s linear infinite;
+      }
+      .pulse-slow {
+        animation: pulse 3s ease-in-out infinite;
+      }
+      .chart-line {
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        animation: drawLine 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards infinite alternate;
+      }
+      .cloud-float {
+        animation: cloudFloat 6s ease-in-out infinite alternate;
+      }
+      .badge-glow {
+        animation: badgePulse 2.5s ease-in-out infinite;
+      }
+
+      @keyframes rotateSun {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.85; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+      }
+      @keyframes drawLine {
+        0% { stroke-dashoffset: 600; }
+        100% { stroke-dashoffset: 0; }
+      }
+      @keyframes cloudFloat {
+        0% { transform: translateY(0px) translateX(0px); }
+        100% { transform: translateY(-4px) translateX(6px); }
+      }
+      @keyframes badgePulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+    </style>
+  </defs>
+
+  <!-- Card Background -->
+  <rect x="5" y="5" width="890" height="250" rx="16" fill="url(#bgGrad)" stroke="url(#iridGlow)" stroke-width="2" />
+
+  <!-- Ambient Grid pattern -->
+  <g opacity="0.12" stroke="#ffffff" stroke-width="0.5">
+    <line x1="5" y1="65" x2="895" y2="65" />
+    <line x1="5" y1="130" x2="895" y2="130" />
+    <line x1="5" y1="195" x2="895" y2="195" />
+    <line x1="200" y1="5" x2="200" y2="255" />
+    <line x1="420" y1="5" x2="420" y2="255" />
+    <line x1="650" y1="5" x2="650" y2="255" />
+  </g>
+
+  <!-- Left: WeatherNet Brand Info -->
+  <g transform="translate(40, 45)">
+    <!-- Brand Badge -->
+    <rect x="0" y="0" width="130" height="24" rx="12" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1" />
+    <circle cx="12" cy="12" r="4" fill="#38bdf8" className="badge-glow" />
+    <text x="24" y="16" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#38bdf8" letter-spacing="0.5">WEATHERNET AI</text>
+
+    <!-- Main Title -->
+    <text x="0" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="34" font-weight="800" fill="#ffffff" letter-spacing="-0.5">
+      Next-Gen Weather
+    </text>
+    <text x="0" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="500" fill="#94a3b8">
+      Real-Time Atmospheric Intelligence &amp; Analytics
+    </text>
+
+    <!-- Stats Badges -->
+    <g transform="translate(0, 118)">
+      <rect x="0" y="0" width="105" height="42" rx="8" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="12" y="18" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" font-weight="600">RESOLUTION</text>
+      <text x="12" y="34" font-family="system-ui, sans-serif" font-size="13" fill="#38bdf8" font-weight="700">WebGL2 60 FPS</text>
+
+      <rect x="115" y="0" width="95" height="42" rx="8" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="127" y="18" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" font-weight="600">UPTIME</text>
+      <text x="127" y="34" font-family="system-ui, sans-serif" font-size="13" fill="#34d399" font-weight="700">99.99% Live</text>
+
+      <rect x="220" y="0" width="95" height="42" rx="8" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="232" y="18" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" font-weight="600">FRAMEWORK</text>
+      <text x="232" y="34" font-family="system-ui, sans-serif" font-size="13" fill="#c084fc" font-weight="700">Next.js 15.2</text>
+    </g>
+  </g>
+
+  <!-- Center Right: Live Animated Sparkline Chart -->
+  <g transform="translate(420, 70)">
+    <rect x="0" y="0" width="220" height="135" rx="10" fill="#0f172a" fill-opacity="0.7" stroke="#334155" stroke-width="1" />
+    <text x="15" y="24" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">24H TEMPERATURE</text>
+    <text x="150" y="24" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#38bdf8">16°C → 22°C</text>
+
+    <!-- Chart Area Filled -->
+    <path d="M 15 105 Q 40 85, 70 95 T 120 60 T 170 50 T 205 75 L 205 120 L 15 120 Z" fill="url(#chartGrad)" />
+    <!-- Chart Animated Stroke Line -->
+    <path d="M 15 105 Q 40 85, 70 95 T 120 60 T 170 50 T 205 75" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" class="chart-line" />
+    <!-- Data Points -->
+    <circle cx="120" cy="60" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" />
+    <circle cx="170" cy="50" r="4" fill="#60a5fa" stroke="#0f172a" stroke-width="1.5" />
+  </g>
+
+  <!-- Right: Rotating Sun & Animated Weather Glyph -->
+  <g transform="translate(680, 45)">
+    <!-- Glowing Sun Background -->
+    <g class="sun-ray">
+      <circle cx="110" cy="75" r="28" fill="url(#sunGrad)" filter="url(#glow)" opacity="0.9" />
+      <line x1="110" y1="36" x2="110" y2="28" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="110" y1="114" x2="110" y2="122" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="71" y1="75" x2="63" y2="75" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="149" y1="75" x2="157" y2="75" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="82" y1="47" x2="76" y2="41" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="138" y1="103" x2="144" y2="109" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="82" y1="103" x2="76" y2="109" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+      <line x1="138" y1="47" x2="144" y2="41" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <!-- Floating Cloud Overlay -->
+    <g class="cloud-float" transform="translate(45, 55)">
+      <path d="M 25,35 A 16,16 0 0,1 55,25 A 24,24 0 0,1 95,30 A 18,18 0 0,1 115,48 A 12,12 0 0,1 110,60 L 25,60 A 14,14 0 0,1 25,35 Z"
+            fill="#e2e8f0" fill-opacity="0.92" filter="url(#glow)" />
+    </g>
+
+    <!-- Weather metrics readout -->
+    <text x="45" y="155" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">AQI 2 • UV 3 • WIND 1m/s</text>
+  </g>
+</svg>

@@ -1,447 +1,396 @@
+<div align="center">
+
+<img src="./public/logo.png" alt="WeatherNet Logo" width="280" />
+
 # WeatherNet - Advanced Weather Network
 
-WeatherNet is a sophisticated, feature-rich weather network application built with Next.js 15, TypeScript, and Tailwind CSS. Experience weather data with comprehensive analytics, intelligent features, and a sleek monochrome design.
+### Enterprise-Grade Atmospheric Intelligence & Predictive Weather Analytics
 
-![WeatherNet Dashboard](./output-dashboard.jpg)
+[![Next.js](https://img.shields.io/badge/Next.js-15.2.8-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-blue?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.17-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![WebGL](https://img.shields.io/badge/WebGL2-Shader-9333ea?style=for-the-badge&logo=webgl)](https://www.khronos.org/webgl/)
+[![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.101-ff4154?style=for-the-badge&logo=react-query)](https://tanstack.com/query)
 
----
+<br />
 
-## License & Copyright
+<img src="./docs/assets/weather-animated-banner.svg" alt="WeatherNet Live Telemetry Banner" width="100%" />
 
-**© 2025 Ayush Singh. All rights reserved.**
-
-This is proprietary software owned exclusively by Ayush Singh. No part of this software may be used, copied, modified, distributed, or otherwise utilized without explicit written permission from the copyright holder.
-
-**UNAUTHORIZED USE IS STRICTLY PROHIBITED**
-
-For licensing inquiries, contact: ayushsingh21109@gmail.com
-
----
-
-## Features
-
-### Core Weather Features
-- **Real-time Weather Data** - Current conditions with live updates
-- **5-Day Detailed Forecast** - Hour-by-hour predictions
-- **Interactive Weather Charts** - Temperature, humidity, and pressure trends
-- **Weather Alerts** - Intelligent warnings for extreme conditions
-
-### Smart Features
-- **Auto Location Detection** - GPS-based weather for your current location
-- **Favorites System** - Save and quickly access your favorite cities
-- **Air Quality Index** - Real-time pollution data with health recommendations
-- **Interactive Maps** - Visual location context with map integration
-
-### User Interface
-- **Monochrome Design** - Elegant black and white aesthetic
-- **Dark/Light Mode** - Seamless theme switching
-- **Fully Responsive** - Optimized for mobile, tablet, and desktop
-- **Glassmorphism Design** - Modern frosted glass effects
-- **High Performance** - Optimized with smooth animations
-
-### Advanced Analytics
-- **Temperature Trends** - Visual charts showing weather patterns
-- **Wind & Pressure Data** - Comprehensive atmospheric information
-- **Precipitation Probability** - Rain forecasts with percentage chances
-- **Sunrise/Sunset Times** - Complete daily light cycle information
+</div>
 
 ---
 
-## Architecture Overview
+## Table of Contents
+
+- [Overview](#overview)
+- [System Architecture](#system-architecture)
+- [WebGL2 Shader Engine](#webgl2-shader-engine)
+- [Interactive Forecast & Telemetry Charts](#interactive-forecast--telemetry-charts)
+- [Component Hierarchy](#component-hierarchy)
+- [Data Flow & Lifecycle](#data-flow--lifecycle)
+- [API Hardening & Security Pipeline](#api-hardening--security-pipeline)
+- [Core Features](#core-features)
+- [Tech Stack](#tech-stack)
+- [Installation & Setup](#installation--setup)
+- [Available Scripts](#available-scripts)
+- [License & Legal](#license--legal)
+
+---
+
+## Overview
+
+**WeatherNet** is an advanced, high-performance meteorological dashboard application engineered with **Next.js 15 (App Router)**, **React 19**, **WebGL2 GLSL Shaders**, and **Tailwind CSS**. It delivers real-time weather analytics, multi-day predictive modeling, air quality monitoring, and interactive visualizations inside a responsive glassmorphic user interface powered by custom liquid-silver WebGL shaders.
+
+---
+
+## System Architecture
 
 ```mermaid
 graph TB
-    subgraph "Client Layer"
-        UI[React 19 Components]
-        Hooks[Custom Hooks]
-        State[TanStack Query Cache]
+    subgraph ClientLayer["🖥️ Presentation Layer (Client Browser)"]
+        UI["Glassmorphic Dashboard UI<br/>(React 19 + Tailwind CSS)"]
+        Shader["Iridescence WebGL2 Engine<br/>(GLSL Shaders + OGL Canvas)"]
+        Search["Debounced City Autocomplete<br/>(CitySearch + LocalStorage Recents)"]
+        Recharts["Interactive Visualizations<br/>(Recharts Dual-Axis Telemetry)"]
     end
 
-    subgraph "API Layer"
-        NextAPI[Next.js API Routes]
-        WeatherAPI[/api/weather]
-        ForecastAPI[/api/forecast]
-        AirQualityAPI[/api/air-quality]
+    subgraph StateLayer["⚡ State & Data Synchronization"]
+        QueryCache["TanStack Query Cache<br/>(5-min SWR Stale Time)"]
+        UnitPref["Unit Preferences Context<br/>(Metric / Imperial / Knots)"]
+        ThemeContext["Theme State Manager<br/>(Monochrome Dark / Light)"]
     end
 
-    subgraph "External Services"
-        OWM[OpenWeatherMap API]
-        Geo[Browser Geolocation]
+    subgraph ServerLayer["🛡️ Secure Edge / API Gateway (Next.js 15)"]
+        RateLimiter["Token-Bucket Rate Limiter<br/>(IP Hash + Burst Control)"]
+        ZodValidator["Zod Input Validation<br/>(Coordinate & City Schemas)"]
+        ProxyCache["Upstream Proxy & TTL Cache<br/>(Cache-Control s-maxage=600)"]
+        
+        WeatherRoute["/api/weather<br/>(Current Conditions)"]
+        ForecastRoute["/api/forecast<br/>(5-Day / 3-Hour Intervals)"]
+        AirQualityRoute["/api/air-quality<br/>(Pollutants & AQI Index)"]
+        GeocodeRoute["/api/geocode<br/>(Direct Geocoding Autocomplete)"]
     end
 
-    UI --> Hooks
-    Hooks --> State
-    State --> NextAPI
-    NextAPI --> WeatherAPI
-    NextAPI --> ForecastAPI
-    NextAPI --> AirQualityAPI
-    WeatherAPI --> OWM
-    ForecastAPI --> OWM
-    AirQualityAPI --> OWM
-    Hooks --> Geo
+    subgraph ExternalServices["🌐 External Upstream APIs"]
+        OWM_Weather["OpenWeatherMap Weather API v2.5"]
+        OWM_Forecast["OpenWeatherMap Forecast API v2.5"]
+        OWM_Pollution["OpenWeatherMap Air Pollution API"]
+        OWM_Geo["OpenWeatherMap Geocoding API v1.0"]
+        BrowserGeo["HTML5 Geolocation API"]
+    end
+
+    %% Connections
+    UI --> QueryCache
+    UI --> UnitPref
+    UI --> ThemeContext
+    Shader -.->|Background Layer| UI
+    Search --> QueryCache
+    Recharts --> QueryCache
+
+    QueryCache --> RateLimiter
+    RateLimiter --> ZodValidator
+    ZodValidator --> ProxyCache
+
+    ProxyCache --> WeatherRoute
+    ProxyCache --> ForecastRoute
+    ProxyCache --> AirQualityRoute
+    ProxyCache --> GeocodeRoute
+
+    WeatherRoute --> OWM_Weather
+    ForecastRoute --> OWM_Forecast
+    AirQualityRoute --> OWM_Pollution
+    GeocodeRoute --> OWM_Geo
+    Search --> BrowserGeo
 ```
 
 ---
 
-## Data Flow
+## WebGL2 Shader Engine
+
+WeatherNet features a native **WebGL2 GLSL Fragment Shader** backdrop (`Iridescence`) that generates interactive fluid ripples and specular reflections without degrading UI framerates.
 
 ```mermaid
-sequenceDiagram
-    participant User
-    participant Dashboard as WeatherDashboard
-    participant Query as TanStack Query
-    participant API as Next.js API Routes
-    participant OWM as OpenWeatherMap
-
-    User->>Dashboard: Search city / Use location
-    Dashboard->>Query: useWeather(city)
-    Query->>API: GET /api/weather?city=X
-    API->>OWM: Request current weather
-    OWM-->>API: Return weather data
-    API-->>Query: JSON response
-    Query-->>Dashboard: Cached data
-    Dashboard->>Query: useAirQuality(lat, lon)
-    Query->>API: GET /api/air-quality
-    API->>OWM: Request air pollution data
-    OWM-->>API: Return AQI data
-    API-->>Query: JSON response
-    Query-->>Dashboard: Cached AQI data
-    Dashboard-->>User: Render weather + AQI
+graph LR
+    subgraph ShaderPipeline["🎨 WebGL2 GLSL Rendering Pipeline"]
+        direction LR
+        VIn["Vertex Shader<br/>(Fullscreen Quad)"] --> UV["UV Coord Normalize<br/>(Aspect Correction)"]
+        UV --> Noise["Domain Warping<br/>(Simplex Noise Field)"]
+        Noise --> Swirl["Swirl Dynamics &<br/>Pointer Interaction"]
+        Swirl --> Specular["Specular Sheen &<br/>Cosine Color Mapping"]
+        Specular --> ToneMap["Tone Mapping &<br/>Contrast Curve (2.2x)"]
+        ToneMap --> Canvas["Framebuffer Output<br/>(alpha: true)"]
+    end
 ```
+
+### Shader Specifications
+- **Render Mode**: Non-blocking background worker (`pointer-events-none z-0`)
+- **Resolution**: Native viewport scaling with DPI clamping (`Math.min(devicePixelRatio, 2)`)
+- **Color Model**: High-contrast liquid silver (`saturation: 0`, `contrast: 2.2`, `brightness: 0.55`)
+- **Performance**: 60 FPS capped with `requestAnimationFrame` and `visibilitychange` dormancy
 
 ---
 
-## Component Structure
+## Interactive Forecast & Telemetry Charts
+
+<div align="center">
+  <img src="./docs/assets/animated-chart.svg" alt="WeatherNet Interactive Dual-Axis Chart" width="100%" />
+</div>
+
+WeatherNet provides high-density meteorological analytics with dual-axis synchronization:
+
+| Metric | Resolution | Visual Display | Measurement Unit |
+| :--- | :--- | :--- | :--- |
+| **Temperature** | 3-Hour Intervals | Monotone Gradient Area Curve | Celsius (°C) / Fahrenheit (°F) |
+| **Precipitation** | 3-Hour Cumulative | Rounded Probability Bars | Percentage (0% – 100%) |
+| **Atmospheric Pressure**| Real-Time & 5-Day | Precision Stepped Line | hPa / inHg / mmHg / psi |
+| **Humidity Index** | Real-Time & 5-Day | Dual-Data Point Connected Line | Relative Humidity (%) |
+| **Wind Vectors** | Directional Deg (0-360°) | Dynamic Compass Rose & Velocity | m/s, km/h, mph, knots |
+
+---
+
+## Component Hierarchy
 
 ```mermaid
 graph TD
-    App[app/page.tsx] --> Layout[RootLayout]
-    Layout --> ThemeProvider[ThemeProvider]
-    Layout --> QueryProvider[QueryProvider]
-    Layout --> UnitProvider[UnitPreferencesProvider]
+    RootLayout["RootLayout (app/layout.tsx)"]
     
-    App --> Dashboard[WeatherDashboard]
+    RootLayout --> Providers["Core Providers"]
+    Providers --> ThemeProv["ThemeProvider"]
+    Providers --> QueryProv["QueryProvider (TanStack)"]
+    Providers --> UnitProv["UnitPreferencesProvider"]
     
-    Dashboard --> Search[Search Section]
-    Dashboard --> Current[Current Weather Card]
-    Dashboard --> AQI[AirQualityCard]
-    Dashboard --> Alerts[WeatherAlerts]
-    Dashboard --> Tabs[Tabs Navigation]
+    RootLayout --> Page["HomePage (app/page.tsx)"]
     
-    Tabs --> CurrentTab[Current Tab]
-    Tabs --> ForecastTab[Forecast Tab]
-    Tabs --> ChartsTab[Charts Tab]
-    Tabs --> FavoritesTab[Favorites Tab]
+    Page --> WebGL["IridescenceBackground (WebGL2 Canvas)"]
+    Page --> Header["Navigation & Branding Header"]
+    Header --> Logo["Logo (/logo.png)"]
+    Header --> ThemeToggle["ThemeToggle"]
     
-    CurrentTab --> Details[WeatherDetails]
-    CurrentTab --> Map[WeatherMap]
+    Page --> Dashboard["WeatherDashboard"]
     
-    ForecastTab --> ForecastCards[ForecastCard x10]
+    Dashboard --> SearchPanel["SearchPanel"]
+    SearchPanel --> CitySearch["CitySearch (Autocomplete + Recents)"]
+    SearchPanel --> UnitToggle["UnitToggle (°C/°F, Wind Units)"]
     
-    ChartsTab --> TempChart[Temperature AreaChart]
-    ChartsTab --> HumidityPressureChart[Humidity/Pressure LineChart]
+    Dashboard --> MainGrid["Primary Metric Grid"]
+    MainGrid --> WeatherCard["Current Weather Card"]
+    WeatherCard --> MetricTiles["Metric Tiles (Wind, Humidity, Vis, Press)"]
+    MainGrid --> AirQualityCard["AirQualityCard (PM2.5, PM10, O₃, NO₂)"]
+    MainGrid --> WeatherAlerts["WeatherAlerts (Dynamic Advisory System)"]
     
-    FavoritesTab --> FavoritesPanel[FavoritesPanel]
+    Dashboard --> TabsNavigation["Analytics Tabs Navigation"]
+    TabsNavigation --> TabCurrent["Tab: Current"]
+    TabCurrent --> WeatherDetails["WeatherDetails (Sunrise, Sunset, Cloudiness)"]
+    TabCurrent --> WeatherMap["WeatherMap (Interactive Coordinates & Geo View)"]
+    
+    TabsNavigation --> TabForecast["Tab: Forecast"]
+    TabForecast --> HourlyStrip["HourlyStrip (24-Hour Predictive Strip)"]
+    TabForecast --> ForecastGrid["ForecastGrid (5-Day Extended Cards)"]
+    
+    TabsNavigation --> TabCharts["Tab: Charts"]
+    TabCharts --> WeatherChart["WeatherChart (Dual-Axis Recharts Engine)"]
+    WeatherChart --> FallbackTable["Accessible Fallback Data Table"]
+    
+    TabsNavigation --> TabFavorites["Tab: Favorites"]
+    TabFavorites --> FavoritesPanel["FavoritesPanel (Local Storage Collections)"]
 ```
+
+---
+
+## Data Flow & Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User / Client
+    participant Dashboard as WeatherDashboard
+    participant Store as TanStack Query Cache
+    participant API as Next.js API Gateway
+    participant Hardening as Security & Rate Limiter
+    participant Upstream as OpenWeatherMap API
+
+    User->>Dashboard: Input city name or click "Locate Me"
+    Dashboard->>Store: Invalidate & trigger useWeather(query)
+    
+    alt Cache Hit (staleTime < 5m)
+        Store-->>Dashboard: Return cached payload immediately
+    else Cache Miss / Expired
+        Store->>API: GET /api/weather?city={query}
+        API->>Hardening: Check Rate Limit (100 req/min)
+        Hardening-->>API: Rate check passed
+        API->>Upstream: Query current weather (HTTPS)
+        Upstream-->>API: 200 OK (Raw weather telemetry)
+        API-->>Store: JSON Response + Cache-Control: max-age=600
+        Store-->>Dashboard: Update React State
+    end
+
+    par Parallel Data Fetch
+        Dashboard->>Store: useAirQuality(lat, lon)
+        Store->>API: GET /api/air-quality?lat={lat}&lon={lon}
+        API->>Upstream: Query Pollution Metrics
+        Upstream-->>API: Return PM2.5, PM10, NO₂, O₃
+        API-->>Store: Normalized Air Quality Object
+        Store-->>Dashboard: Stream AQI badge & pollutant breakdown
+    and Predictive Modeling Fetch
+        Dashboard->>Store: useForecast(city)
+        Store->>API: GET /api/forecast?city={city}
+        API->>Upstream: Query 5-day / 3-hour forecast
+        Upstream-->>API: Return 40 forecast buckets
+        API-->>Store: Aggregated forecast stream
+        Store-->>Dashboard: Update 24h HourlyStrip & Recharts data
+    end
+
+    Dashboard-->>User: Render Glassmorphic UI with Smooth Animations
+```
+
+---
+
+## API Hardening & Security Pipeline
+
+All external network operations are mediated through a defensive server-side abstraction layer located in [`lib/api-hardening.ts`](./lib/api-hardening.ts):
+
+```mermaid
+stateDiagram-v2
+    [*] --> InboundRequest: HTTP GET /api/*
+    
+    state RateLimitCheck {
+        InboundRequest --> ExtractIP: Parse x-forwarded-for / socket
+        ExtractIP --> TokenBucket: Decrement Client Token
+        TokenBucket --> Allowed: Tokens > 0
+        TokenBucket --> Throttled: Tokens == 0
+    }
+
+    Throttled --> 429Response: HTTP 429 Too Many Requests (Retry-After)
+    
+    state ValidationCheck {
+        Allowed --> ValidateSchema: Parse query with Zod Schema
+        ValidateSchema --> ValidInput: Coordinates in bounds / Valid city string
+        ValidateSchema --> InvalidInput: Schema parse failure
+    }
+
+    InvalidInput --> 422Response: HTTP 422 Unprocessable Entity
+    
+    state UpstreamExecution {
+        ValidInput --> UpstreamFetch: Fetch Upstream with 10s Timeout
+        UpstreamFetch --> CacheHeaders: Attach Cache-Control & Security Headers
+        CacheHeaders --> 200Success: HTTP 200 JSON Telemetry
+    }
+
+    429Response --> [*]
+    422Response --> [*]
+    200Success --> [*]
+```
+
+---
+
+## Core Features
+
+- **Real-Time Weather Intelligence**: Instant temperature, atmospheric pressure, relative humidity, cloudiness index, and wind velocity vectors.
+- **24-Hour & 5-Day Forecasting**: High-resolution hourly forecast strip alongside 5-day predictive cards.
+- **Air Quality Telemetry (AQI)**: Continuous monitoring of particulate matter (PM2.5, PM10), tropospheric ozone (O₃), and nitrogen dioxide (NO₂).
+- **Interactive Multi-Chart Suite**: Recharts-powered temperature curves, precipitation likelihood bars, and barometric trends.
+- **Geolocation & Intelligent Geocoding**: Browser-based position detection with debounced city search autocomplete and persistent recent searches.
+- **Unit Preference Engine**: Dynamic metric/imperial/nautical unit switching (°C/°F, m/s, km/h, mph, knots).
+- **Favorites Management**: LocalStorage-persisted bookmarks for instant multi-city tracking.
+- **Progressive Web App (PWA)**: Offline service-worker registration, Web App Manifest, and cached static telemetry.
 
 ---
 
 ## Tech Stack
 
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **React 19** - Latest React with concurrent features
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
-- **Shadcn/ui** - Accessible component primitives
-- **Recharts** - Interactive data visualization
-- **TanStack Query** - Server state management & caching
-
-### APIs & Services
-- **OpenWeatherMap API** - Weather and air quality data
-- **Geolocation API** - Browser-based location detection
-
-### Development Tools
-- **ESLint** - Code quality
-- **TypeScript Strict Mode** - Enhanced type safety
-- **Vitest** - Unit testing
-- **GitHub Actions** - CI/CD pipeline
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | **Next.js 15.2.8** | React Fullstack App Router, Edge Middleware, Static Site Generation |
+| **Runtime** | **React 19.1.0** | Modern concurrent rendering, server components, and optimized hooks |
+| **Language** | **TypeScript 5.8** | Full static type safety with strict compiler configuration |
+| **Styling** | **Tailwind CSS 3.4** | Utility-first styling with custom frosted glassmorphic primitives |
+| **Graphics** | **WebGL2 / OGL** | Native hardware-accelerated GLSL shader fluid background |
+| **Data Fetching** | **TanStack Query 5.101** | Intelligent caching, stale-while-revalidate, and query deduplication |
+| **Charts** | **Recharts 3.5.1** | Composed dual-axis area, line, and bar visualization primitives |
+| **Validation** | **Zod 3.24** | Runtime request input parsing and environment variable guards |
+| **Icons** | **Lucide React** | Consistent, accessible icon components |
+| **Testing** | **Vitest 4.1 + RTL** | High-speed unit testing and coverage reporting |
 
 ---
 
 ## Installation & Setup
 
-**IMPORTANT: This software is proprietary and requires permission from Ayush Singh before use.**
+> **Note:** This repository is proprietary software developed by Ayush Singh.
 
 ### Prerequisites
-- Node.js 18+
-- OpenWeatherMap API key (free at [openweathermap.org](https://openweathermap.org/api))
-- Written permission from Ayush Singh
+- **Node.js**: v18.18 or higher (v20+ recommended)
+- **Package Manager**: `pnpm` (v9 or v10)
+- **API Key**: Free OpenWeatherMap API key ([openweathermap.org](https://openweathermap.org/api))
 
-### Quick Start (Authorized Users Only)
+### Step-by-Step Setup
 
-1. **Obtain Permission:**
-   Contact ayushsingh21109@gmail.com for licensing
-
-2. **Clone the repository:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/AyushSingh360/weathernet.git
-   cd weathernet
+   git clone https://github.com/AyushSingh360/WeatherNet-AI.git
+   cd WeatherNet-AI
    ```
 
-3. **Install dependencies:**
+2. **Install dependencies:**
    ```bash
    pnpm install
    ```
 
-4. **Configure Environment Variables:**
-   
-   Create `.env.local` in the project root:
+3. **Configure Environment Variables:**
+   Create a `.env.local` file in the project root:
    ```env
-   OPENWEATHERMAP_API_KEY=your_api_key_here
+   OPENWEATHERMAP_API_KEY=your_openweathermap_api_key_here
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
    ```
 
-5. **Run the development server:**
+4. **Launch Development Server:**
    ```bash
    pnpm dev
    ```
-
-   Open [http://localhost:3000](http://localhost:3000)
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Build for production |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm typecheck` | Run TypeScript compiler check |
-| `pnpm test` | Run Vitest unit tests |
-| `pnpm test:watch` | Run tests in watch mode |
-
----
-
-## Usage Guide
-
-### Search for Cities
-- Type any city name in the search bar
-- Get instant weather updates with smooth animations
-
-### Use Your Location
-- Click the location button to auto-detect your position
-- Grant location permissions for the best experience
-
-### Manage Favorites
-- Click the bookmark icon to save cities
-- Access your favorites from the dedicated tab
-- Remove cities with a single click
-
-### Explore Data
-- Switch between Current, Forecast, Charts, and Favorites tabs
-- Hover over elements for interactive details
-- View comprehensive weather metrics
-
----
-
-## Project Structure
-
-```
-weathernet/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   │   ├── weather/       # Current weather endpoint
-│   │   ├── forecast/      # Forecast endpoint
-│   │   └── air-quality/   # Air quality endpoint
-│   ├── globals.css        # Global styles & animations
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx          # Home page
-├── components/            # React components
-│   ├── ui/               # Reusable UI components (Shadcn)
-│   ├── logo.tsx          # WeatherNet logo component
-│   ├── weather-dashboard.tsx  # Main dashboard
-│   ├── weather-chart.tsx     # Chart components
-│   ├── air-quality-card.tsx  # Air quality display
-│   ├── skeletons.tsx         # Loading skeletons
-│   ├── error-boundary.tsx    # Error boundary
-│   └── ...               # Other feature components
-├── hooks/                # Custom React hooks
-│   ├── use-weather.tsx   # Weather data management
-│   ├── use-air-quality.tsx   # Air quality data
-│   ├── use-geolocation.tsx   # Location detection
-│   ├── use-favorites.tsx     # Favorites management
-│   └── use-unit-preferences.tsx # Unit conversion system
-├── lib/                  # Utility functions
-├── providers/            # Context providers
-│   └── query-provider.tsx    # TanStack Query provider
-├── types/                # TypeScript definitions
-├── public/               # Static assets
-└── vitest.config.ts      # Vitest configuration
-```
-
----
-
-## Design Philosophy
-
-### Visual Design
-- **Monochrome Aesthetic** - Sophisticated black and white color scheme
-- **Glassmorphism** - Frosted glass effects with backdrop blur
-- **Micro-interactions** - Subtle animations enhancing user experience
-- **Typography Hierarchy** - Clear information architecture
-
-### User Experience
-- **Progressive Disclosure** - Information revealed contextually
-- **Accessibility First** - WCAG compliant design
-- **Performance Optimized** - Fast loading with smooth animations
-- **Mobile Responsive** - Touch-friendly interface
-
----
-
-## Key Features Explained
-
-### Advanced Animations
-```css
-/* Custom keyframe animations */
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Staggered animation delays */
-.animate-slide-up.delay-100 { animation-delay: 100ms; }
-```
-
-### Air Quality Integration
-- Real-time AQI (Air Quality Index) data
-- PM2.5, PM10, O₃, NO₂ measurements
-- Health recommendations based on pollution levels
-- Monochrome color-coded quality indicators
-
-### Interactive Charts
-- Temperature trend visualization (Area Chart)
-- Humidity and pressure correlations (Line Chart)
-- Responsive chart design with monochrome scheme
-- Smooth data transitions
-
-### Performance Optimizations
-- TanStack Query caching (5 min stale time)
-- Lazy loading of heavy components
-- Optimized API calls with deduplication
-- Efficient state management
-
----
-
-## Customization
-
-**Note: Customization requires permission from Ayush Singh**
-
-### Themes
-Modify `app/globals.css` to customize the monochrome theme:
-```css
-:root {
-  --primary-gradient: linear-gradient(135deg, #000000 0%, #404040 100%);
-  --animation-duration: 0.6s;
-}
-```
-
-### Logo Customization
-The WeatherNet logo combines a cloud icon with a lightning bolt and can be customized in `components/logo.tsx`:
-- Adjust icon sizes for different breakpoints
-- Modify the color scheme
-- Change the typography
-
----
-
-## Deployment
-
-**Deployment requires explicit permission from Ayush Singh**
-
-### Authorized Deployment Options
-1. Contact ayush.singh.dev@example.com for deployment authorization
-2. Obtain written permission for production use
-3. Follow standard deployment procedures only after authorization
-
----
-
-## Testing
-
-### Unit Tests
 ```bash
+# Start Next.js development server
+pnpm dev
+
+# Perform TypeScript type checking
+pnpm typecheck
+
+# Run ESLint validation
+pnpm lint
+
+# Execute Vitest test suite
 pnpm test
+
+# Run tests with test coverage reporting
+pnpm test:coverage
+
+# Build optimized production bundle
+pnpm build
+
+# Start production server
+pnpm start
 ```
 
-### Test Coverage
-```bash
-pnpm test --coverage
-```
-
-### Test Files
-- `hooks/use-unit-preferences.test.ts` - Unit conversion utilities
-
 ---
 
-## Contributing
-
-**This is proprietary software. Contributions are not accepted without explicit permission from Ayush Singh.**
-
-To request permission to contribute:
-1. Contact ayush.singh.dev@example.com
-2. Provide detailed information about proposed contributions
-3. Wait for written authorization before proceeding
-
----
-
-## License
-
-**PROPRIETARY SOFTWARE - ALL RIGHTS RESERVED**
-
-Copyright (c) 2025 Ayush Singh. All rights reserved.
-
-This software is protected by copyright law. Unauthorized use, reproduction, or distribution is strictly prohibited and may result in severe civil and criminal penalties.
-
-See the [LICENSE](LICENSE) file for complete terms and conditions.
-
----
-
-## Acknowledgments
-
-- **OpenWeatherMap** for comprehensive weather data
-- **Shadcn/ui** for beautiful component primitives
-- **Recharts** for powerful data visualization
-- **TanStack Query** for server state management
-- **Pexels** for stunning stock photography
-- **Lucide** for crisp, consistent icons
-
----
-
-## Contact & Support
-
-**For all inquiries regarding this proprietary software:**
-
-**Ayush Singh**
-- **Email**: ayushsingh21109@gmail.com
-- **Licensing**: ayushsingh21109@gmail.com
-- **Authorized Bug Reports**: Contact via email only
-- **Feature Requests**: Authorized users only
-
----
-
-## Legal Notice
-
-This software is the exclusive intellectual property of Ayush Singh. Any unauthorized use, copying, modification, distribution, or reverse engineering is strictly prohibited and will be prosecuted to the full extent of the law.
+## License & Legal
 
 **© 2025 Ayush Singh. All rights reserved.**
+
+This is proprietary software owned exclusively by **Ayush Singh**. No part of this software may be used, copied, modified, distributed, or otherwise utilized without explicit written permission from the copyright holder.
+
+For commercial licensing and permissions:
+- **Lead Developer**: Ayush Singh
+- **GitHub**: [@AyushSingh360](https://github.com/AyushSingh360)
+- **Inquiries**: [ayushsingh21109@gmail.com](mailto:ayushsingh21109@gmail.com)
 
 ---
 
 <div align="center">
-
-**WeatherNet - Proprietary Weather Network Software**
-
-*Developed exclusively by Ayush Singh (GitHub: AyushSingh360)*
-
-**All rights reserved. Unauthorized use prohibited.**
-
+  <sub>Engineered with precision by <strong>Ayush Singh</strong> • WeatherNet AI</sub>
 </div>
